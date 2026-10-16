@@ -1,0 +1,30 @@
+.filter-btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #94a3b8;
+    background-color: #020617;
+    border: 1px solid #1e293b;
+    transition: all 0.2s ease-in-out;
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    color: #f8fafc;
+    border-color: #334155;
+}
+
+.filter-btn.active-tab {
+    background-color: #f59e0b;
+    color: #020617;
+    border-color: #f59e0b;
+    font-weight: 600;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
