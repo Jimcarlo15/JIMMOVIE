@@ -6,37 +6,41 @@ $f = $edit_movie ?? [];
     <label>Movie Title <span class="req">*</span></label>
     <input type="text" name="title" required
            value="<?= htmlspecialchars($f['title'] ?? '') ?>"
-           placeholder="e.g. Inception">
+           placeholder="e.g. Inception (2010)">
 </div>
 
 <div class="form-row">
     <div class="form-group">
-        <label>Category <span class="req">*</span></label>
-        <select name="category" required>
-            <option value="Hollywood" <?= ($f['category'] ?? '') === 'Hollywood' ? 'selected' : '' ?>>🎬 Hollywood</option>
-            <option value="Anime"     <?= ($f['category'] ?? '') === 'Anime'     ? 'selected' : '' ?>>⛩️ Anime</option>
+        <label>Primary Genre <span class="req">*</span></label>
+        <select name="genre" required>
+            <?php 
+            $genres = ['Action', 'Adventure', 'Biography', 'Comedy', 'Crime', 'Drama', 'Family', 'Fantasy', 'Mystery', 'Sci-Fi'];
+            foreach ($genres as $g): 
+            ?>
+            <option value="<?= $g ?>" <?= ($f['genre'] ?? '') === $g ? 'selected' : '' ?>><?= $g ?></option>
+            <?php endforeach; ?>
         </select>
     </div>
     <div class="form-group">
-        <label>Rating (0 – 10) <span class="req">*</span></label>
-        <input type="number" name="rating" step="0.1" min="0" max="10" required
-               value="<?= htmlspecialchars($f['rating'] ?? '') ?>"
-               placeholder="8.5">
+        <label>Director</label>
+        <input type="text" name="director"
+               value="<?= htmlspecialchars($f['director'] ?? '') ?>"
+               placeholder="e.g. Christopher Nolan">
     </div>
 </div>
 
 <div class="form-row">
     <div class="form-group">
-        <label>Genre <span class="req">*</span></label>
-        <input type="text" name="genre" required
-               value="<?= htmlspecialchars($f['genre'] ?? '') ?>"
-               placeholder="Action, Sci-Fi">
+        <label>Rating (0.0 – 10.0) <span class="req">*</span></label>
+        <input type="number" name="rating" step="0.1" min="0" max="10" required
+               value="<?= htmlspecialchars($f['rating'] ?? '') ?>"
+               placeholder="8.8">
     </div>
     <div class="form-group">
         <label>Release Year <span class="req">*</span></label>
         <input type="number" name="year" min="1900" max="2099" required
                value="<?= htmlspecialchars($f['year'] ?? date('Y')) ?>"
-               placeholder="2024">
+               placeholder="2010">
     </div>
 </div>
 
@@ -48,7 +52,7 @@ $f = $edit_movie ?? [];
 </div>
 
 <div class="form-group">
-    <label>Description <span class="req">*</span></label>
+    <label>Movie Description / Synopsis <span class="req">*</span></label>
     <textarea name="description" rows="4" required
-              placeholder="Write a short summary of the movie..."><?= htmlspecialchars($f['description'] ?? '') ?></textarea>
+              placeholder="Enter synopsis..."><?= htmlspecialchars($f['description'] ?? '') ?></textarea>
 </div>

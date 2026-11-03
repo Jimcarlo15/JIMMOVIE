@@ -9,11 +9,11 @@ $movie->execute([$id]);
 $m = $movie->fetch();
 if (!$m) { header('Location: index.php'); exit; }
 
-function stars(float $r): string {
-    $full  = (int)floor($r / 2);
-    $half  = ($r / 2 - $full) >= 0.25 ? 1 : 0;
-    $empty = 5 - $full - $half;
-    return str_repeat('★', $full) . str_repeat('½', $half) . str_repeat('☆', $empty);
+function renderStars(float $rating): string {
+    $full = (int)round($rating / 2);
+    $full = max(0, min(5, $full));
+    $empty = 5 - $full;
+    return str_repeat('★', $full) . str_repeat('☆', $empty);
 }
 ?>
 <!DOCTYPE html>
@@ -21,79 +21,83 @@ function stars(float $r): string {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title><?= htmlspecialchars($m['title']) ?> — JimMovie</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title><?= htmlspecialchars($m['title']) ?> — Movie Catalog</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
-<div class="grain"></div>
-
-<header class="site-header">
+<header class="header-container">
     <div class="header-inner">
-        <a href="index.php" class="logo">
-            <span class="logo-icon">▶</span>
-            <span class="logo-text">Jim<span class="logo-accent">Movie</span></span>
+        <a href="index.php" class="header-logo">
+            <span class="clapper-icon">🎬</span>
+            <span class="logo-title">Movie Catalog</span>
         </a>
-        <nav class="back-nav">
-            <a href="index.php" class="back-link">← Back to List</a>
-        </nav>
+        <div>
+            <a href="index.php" class="yellow-gloss-btn" style="text-decoration:none; padding:7px 18px; display:inline-block;">&laquo; Back to Catalog</a>
+        </div>
     </div>
 </header>
 
-<!-- TODO: Show full movie detail here -->
-<!-- Hint: use $m['title'], $m['poster_url'], $m['description'], $m['rating'], $m['genre'], $m['year'] -->
-
-<main class="detail-wrap">
-    <div class="detail-card">
-
-        <div class="detail-left">
-            <?php if ($m['poster_url']): ?>
-                <img src="<?= htmlspecialchars($m['poster_url']) ?>"
-                     alt="<?= htmlspecialchars($m['title']) ?> poster"
-                     class="detail-poster">
-            <?php else: ?>
-                <div class="detail-no-poster">🎬<br>No Image</div>
-            <?php endif; ?>
-
-            <div class="score-panel">
-                <div class="score-big"><?= number_format($m['rating'], 1) ?></div>
-                <div class="score-outof">out of 10</div>
-                <div class="stars-lg"><?= stars((float)$m['rating']) ?></div>
-                <div class="rbar-track" style="margin-top:.6rem">
-                    <div class="rbar-fill" style="width:<?= ($m['rating'] / 10) * 100 ?>%"></div>
-                </div>
+<div class="main-wrapper" style="margin-top:25px;">
+    <div class="movie-detail-box">
+        <div class="detail-left-col">
+            <div class="detail-poster-frame">
+                <?php if ($m['poster_url']): ?>
+                <img src="<?= htmlspecialchars($m['poster_url']) ?>" alt="<?= htmlspecialchars($m['title']) ?>" class="detail-poster-img">
+                <?php else: ?>
+                <div class="no-poster-box" style="height:350px;">No Poster</div>
+                <?php endif; ?>
+            </div>
+            
+            <div class="detail-rating-widget">
+                <div class="rating-stars-large"><?= renderStars((float)$m['rating']) ?></div>
+                <div class="rating-score-large"><?= number_format($m['rating'], 1) ?> <span class="rating-max">/ 10</span></div>
+                <div class="unplayable-notice">ℹ️ Catalog &amp; Rating only — Non-Playable</div>
             </div>
         </div>
 
-        <div class="detail-right">
+        <div class="detail-right-col">
+            <h1 class="detail-movie-title"><?= htmlspecialchars($m['title']) ?></h1>
 
-            <span class="cat-tag cat-<?= strtolower($m['category']) ?>">
-                <?= $m['category'] === 'Anime' ? '⛩️' : '🎬' ?> <?= htmlspecialchars($m['category']) ?>
-            </span>
+            <table class="detail-meta-table">
+                <tr>
+                    <td class="meta-label">Genre:</td>
+                    <td class="meta-value"><strong><?= htmlspecialchars($m['genre']) ?></strong></td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Director:</td>
+                    <td class="meta-value"><?= htmlspecialchars($m['director'] ?? 'Unknown') ?></td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Release Year:</td>
+                    <td class="meta-value"><?= $m['year'] ?></td>
+                </tr>
+                <tr>
+                    <td class="meta-label">Rating:</td>
+                    <td class="meta-value"><span style="color:#f5b300; font-weight:bold;">★ <?= number_format($m['rating'], 1) ?></span> (out of 10)</td>
+                </tr>
+            </table>
 
-            <h1 class="detail-title"><?= htmlspecialchars($m['title']) ?></h1>
+            <div class="detail-section-title">Plot Synopsis &amp; Description</div>
+            <div class="detail-description-content">
+                <p><?= nl2br(htmlspecialchars($m['description'])) ?></p>
+            </div>
 
-            <!-- TODO: Display Year and Genre as meta chips here -->
-
-            <div class="detail-divider"></div>
-
-            <!-- TODO: Display the full description here -->
-
-            <!-- TODO: Display the date added here -->
-
-            <!-- TODO: Add Edit and Delete buttons here -->
-
+            <div class="detail-actions-row">
+                <a href="index.php?edit=<?= $m['id'] ?>" class="yellow-gloss-btn" style="text-decoration:none;">✏️ Edit This Movie</a>
+                <form method="POST" action="add_movie.php" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this movie?');">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="<?= $m['id'] ?>">
+                    <button type="submit" class="btn-detail-delete">🗑️ Delete Movie</button>
+                </form>
+                <a href="index.php" class="btn-catalog-cancel" style="text-decoration:none;">Back to List</a>
+            </div>
         </div>
     </div>
-</main>
+</div>
 
-<footer class="site-footer">
-    <div class="footer-inner">
-        <span class="footer-logo">▶ JimMovie</span>
-        <span>Movie Ratings Catalog &copy; <?= date('Y') ?> &nbsp;|&nbsp; PHP + SQLite</span>
-    </div>
+<footer class="catalog-footer">
+    <p>Movie Catalog &copy; <?= date('Y') ?> &bull; Movies with Ratings, Images &amp; Descriptions &bull; Non-Playable</p>
 </footer>
 
 </body>
