@@ -61,6 +61,10 @@ function renderStars(float $rating): string {
 
             <table class="detail-meta-table">
                 <tr>
+                    <td class="meta-label">Category:</td>
+                    <td class="meta-value"><strong><?= htmlspecialchars($m['category'] ?? 'Hollywood') ?></strong></td>
+                </tr>
+                <tr>
                     <td class="meta-label">Genre:</td>
                     <td class="meta-value"><strong><?= htmlspecialchars($m['genre']) ?></strong></td>
                 </tr>
@@ -100,5 +104,6 @@ function renderStars(float $rating): string {
     <p>Movie Catalog &copy; <?= date('Y') ?> &bull; Movies with Ratings, Images &amp; Descriptions &bull; Non-Playable</p>
 </footer>
 
+<script src="assets/script.js"></script>
 </body>
 </html>

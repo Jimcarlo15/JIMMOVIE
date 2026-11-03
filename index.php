@@ -350,20 +350,6 @@ if (isset($_GET['edit'])) {
     <p>Movie Catalog &copy; <?= date('Y') ?> &bull; Movies with Ratings, Images &amp; Descriptions &bull; Non-Playable</p>
 </footer>
 
-<script>
-function openModal(id) {
-    document.getElementById(id).style.display = 'flex';
-}
-function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-}
-document.querySelectorAll('.catalog-modal-overlay').forEach(function(el) {
-    el.addEventListener('click', function(e) {
-        if (e.target === el) {
-            el.style.display = 'none';
-        }
-    });
-});
-</script>
+<script src="assets/script.js"></script>
 </body>
 </html>
